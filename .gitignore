@@ -1,0 +1,6 @@
+*.swp
+*.opensdf
+*.sdf
+Debug/
+Release/
+level_0x01/
