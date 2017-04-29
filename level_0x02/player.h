@@ -10,8 +10,20 @@ public:
   virtual ~CPlayer();
   virtual IGameElement* creatSelf(int nRow, int nCol);
   int getScore();
+  void setScore(int nScore);
+  void addScore(int nScore);
+  int getLift();
+  void setLift(int nLift);
   
+  virtual void CPlayer::beHit();
+  
+  // 更新时间，并返回时间是否大于对象速度
+  int updateClock();
+  // 回位
+  virtual void backPos();
+
 private:
   int m_nScore;
+  int m_nLift;
 };
 

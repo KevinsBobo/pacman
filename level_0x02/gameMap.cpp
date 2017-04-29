@@ -25,7 +25,7 @@ int g_map[ MAPROW ][ MAPCOL ] =
   1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,
   1,0,1,1,1,1,0,1,1,1,1,1,0,1,1,0,1,1,1,1,1,0,1,1,1,1,0,1,
   1,0,1,1,1,1,0,1,1,1,1,1,0,1,1,0,1,1,1,1,1,0,1,1,1,1,0,1,
-  1,2,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,2,1,
+  1,2,0,0,1,1,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,1,1,0,0,2,1,
   1,1,1,0,1,1,0,1,1,0,1,1,1,1,1,1,1,1,0,1,1,0,1,1,0,1,1,1,
   1,1,1,0,1,1,0,1,1,0,1,1,1,1,1,1,1,1,0,1,1,0,1,1,0,1,1,1,
   1,0,0,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,0,1,
@@ -35,11 +35,8 @@ int g_map[ MAPROW ][ MAPCOL ] =
   1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 };
 
-const int g_nFirstGhoRow = 14;
-const int g_nFirstGhoCol = 12;
-
-const int g_nPlayerRow = 23;
-const int g_nPlayerCol = 13;
+// 单例类创建函数
+SINGLE_INSTANCE(CGameMap);
 
 CGameMap::CGameMap()
 {
@@ -89,13 +86,25 @@ CGameMap::~CGameMap()
   }
 }
 
-void CGameMap::show(echoMapElement echoFun)
+void CGameMap::show(CGameUI* uiObj, echoMapElement echoFun)
 {
-  static CGameUI echoObj;
   for(int i = 0; i < MAPROW * MAPCOL + NGHOST + NPLAYER; ++i)
   {
-    (echoObj.*echoFun)((*m_gameObj[ i ])[ CGame::posRow ] ,
+    (uiObj->*echoFun)((*m_gameObj[ i ])[ CGame::posRow ] ,
                        (*m_gameObj[ i ])[ CGame::posCol ] ,
                         m_gameObj[ i ]->getType());
   }
 }
+
+IGameElement** CGameMap::operator[](int nIndex)
+{
+  return m_gameObj + nIndex * g_nMapCol;
+}
+
+IGameElement** CGameMap::getMoveObj()
+{
+  return m_gameObj + g_nMapRow * g_nMapCol;
+}
+
+// 创建单例类的类
+CREATE_SINGLE_OBJ_REALIZE(CGameMap);

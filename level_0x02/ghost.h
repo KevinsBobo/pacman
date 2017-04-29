@@ -12,7 +12,14 @@ public:
   // 获取类型
   virtual const int getType();
   // 进入恐惧模式
-  static void toFear();
+  void toFear();
+
+  void beHit();
+
+  // 更新时间，并返回时间是否大于对象速度
+  int updateClock();
+  // 回位
+  virtual void backPos();
 
 private:
   int m_nWhatGhost;

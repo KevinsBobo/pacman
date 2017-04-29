@@ -15,6 +15,10 @@ public:
   virtual int updateClock();
   // 移动
   virtual int move();
+  // 设置速度
+  virtual void setSpead(int nSpead);
+  // 回位
+  virtual void backPos();
 protected:
   clock_t m_nSpead;
   clock_t m_nPreMoveClock;

@@ -9,8 +9,23 @@ int main()
   // char* ch = "aa";
   // test.writeChar(5 , 12 , ch , CGameUI::colWhite);
 
-  CGameMap testMap;
-  testMap.show(&CGameUI::echoMapByApi);
+  // CGameUI testUI;
+  // CGameMap testMap;
+  // testMap.show(testUI, &CGameUI::echoMapByApi);
+
+  // CGetCGameUI test;
+  // CGetCGameMap testMap;
+
+  // CGameUI* testUI = test.get();
+  // CGameMap* testMapObj = testMap.get();
+
+  // testMapObj->show(testUI , &CGameUI::echoMap);
+
+  CGetCGameCtrl test;
+  CGameCtrl* testCtrl = test.get();
+
+  testCtrl->gameLoop();
+
 
   return 0;
 }

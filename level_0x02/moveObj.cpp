@@ -9,7 +9,8 @@ CMoveObj::CMoveObj()
 CMoveObj::CMoveObj(int nRow , int nCol)
   : CGameElement(nRow, nCol) , m_nSpead(0) , m_nPreMoveClock(0)
 {
-  m_nPreMoveClock = -1 ^ (1 << (sizeof(clock_t) * 8 - 1));
+  // 错误，将初始速度设为最大会导致逻辑错误
+  // m_nPreMoveClock = -1 ^ (1 << (sizeof(clock_t) * 8 - 1));
 }
 
 CMoveObj::~CMoveObj()
@@ -26,5 +27,35 @@ int CMoveObj::updateClock()
 // 移动
 int CMoveObj::move()
 {
+  // 当玩家被鬼抓到的时候晚间就不能再动了
+  // 这个用于解决在岔路口时鬼检测到了抓到玩家，
+  // 而玩家却没有检测到被鬼抓到
+  // 因为逻辑上是鬼先于玩家移动的，所以鬼不会出现这种问题
+  if(m_nType == CGame::itemPlayer && g_isBeEat == 1)
+  {
+    return 0;
+  }
+
+  if(updateClock() == 0)
+  {
+    return 0;
+  }
+  int nCrash = isCrash();
+  if(nCrash == CGame::craPass)
+  {
+    m_postion = m_postion.getActionPostion(m_nAction);
+  }
   return 0;
+}
+
+// 设置速度
+void CMoveObj::setSpead(int nSpead)
+{
+  m_nSpead = nSpead;
+}
+
+// 回位
+void CMoveObj::backPos()
+{
+
 }

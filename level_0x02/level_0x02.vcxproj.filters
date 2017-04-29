@@ -72,6 +72,9 @@
     <ClInclude Include="ghoHome.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="gameCtrl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="iGameElement.cpp">
@@ -120,6 +123,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ghoHome.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="gameCtrl.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

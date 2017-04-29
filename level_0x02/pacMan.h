@@ -5,6 +5,7 @@
 #include <ctime>
 #include <cstring>
 #include <windows.h>
+#include <conio.h>
 
 /* 项目头文件 */
 #include "game.h"
@@ -14,6 +15,7 @@
 #include "postion.h"
 #include "gameUI.h"
 #include "gameMap.h"
+#include "gameCtrl.h"
 
 #ifndef IGAMEELEMENTHEADER
 #ifndef CGAMEELEMENTHEADER

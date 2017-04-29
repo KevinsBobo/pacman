@@ -8,9 +8,8 @@ class CPostion
 public:
   CPostion();
   CPostion(int nRow , int nCol);
+  CPostion(CPostion& obj);
   ~CPostion();
-  // 初始化地图
-  void initMap();
   // 获取对应横纵坐标
   int& operator[](int nIndex);
   // 坐标赋值
@@ -20,7 +19,7 @@ public:
   // 设置坐标
   void set(int nRow , int nCol);
   // 获取这个方向下个坐标
-  CPostion& getActionPostion(int nAction);
+  CPostion getActionPostion(int nAction);
   // 根据方向修改坐标
   void changePostion(int nAction);
 

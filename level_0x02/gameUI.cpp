@@ -1,14 +1,17 @@
 #include "gameUI.h"
 
 char* g_elementStr[ CGame::itemPlayer + 1 ] =
-{"·", "■", "●", "  ", "  ", "※", "※", "※", "※", "※", "※", "№", "※", "★"};
+{"·", "■", "●", "  ", "  ", "※", "※", "※", "※", "※", "※", "※", "№", "★"};
 int g_elementColor[ CGame::itemPlayer + 1 ] =
 {
   CGameUI::colWhite , CGameUI::colBlue  , CGameUI::colWhite , CGameUI::colBlack ,
   CGameUI::colBlack , CGameUI::colBlack , CGameUI::colRed   , CGameUI::colYellow,
-  CGameUI::colBlue  , CGameUI::colThinRed, CGameUI::colGray  , CGameUI::colGray,
+  CGameUI::colBlue  , CGameUI::colThinRed, CGameUI::colGray , CGameUI::colGray ,
   CGameUI::colBlack , CGameUI::colYellow
 };
+
+// 单例模式创建函数
+SINGLE_INSTANCE(CGameUI);
 
 CGameUI::CGameUI()
 {
@@ -20,6 +23,11 @@ CGameUI::CGameUI()
 
 CGameUI::~CGameUI()
 {
+}
+
+void CGameUI::echoMap(int nRow , int nCol , int nType)
+{
+  echoMapByApi(nRow , nCol , nType);
 }
 
 void CGameUI::echoMapByPrintf(int nRow , int nCol , int nType)
@@ -79,3 +87,6 @@ bool CGameUI::setWindowSize(char *pszWindowTitle  , int nY, int nX){
 	}
 	return true;
 }
+
+// 创建单例类的类
+CREATE_SINGLE_OBJ_REALIZE(CGameUI);

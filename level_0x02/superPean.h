@@ -9,5 +9,6 @@ public:
   CSuperPean(int nRow, int nCol);
   virtual ~CSuperPean();
   virtual IGameElement* creatSelf(int nRow, int nCol);
+  virtual void beHit();
 };
 

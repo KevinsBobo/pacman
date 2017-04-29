@@ -17,3 +17,10 @@ IGameElement* CSuperPean::creatSelf(int nRow, int nCol)
 {
   return NULL;
 }
+
+void CSuperPean::beHit()
+{
+  m_nType = CGame::itemRoad;
+  g_nAddScore += g_nSuperPeanBeEatScore;
+  g_nSuperPeanBeEat += 1;
+}

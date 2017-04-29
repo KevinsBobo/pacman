@@ -17,3 +17,9 @@ IGameElement* CPean::creatSelf(int nRow, int nCol)
 {
   return NULL;
 }
+
+void CPean::beHit()
+{
+  m_nType = CGame::itemRoad;
+  g_nAddScore += g_nPeanBeEatScore;
+}

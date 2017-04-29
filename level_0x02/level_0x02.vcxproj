@@ -80,6 +80,7 @@
   <ItemGroup>
     <ClInclude Include="funPtr.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="gameCtrl.h" />
     <ClInclude Include="gameElement.h" />
     <ClInclude Include="gameMap.h" />
     <ClInclude Include="gameUI.h" />
@@ -100,6 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="gameCtrl.cpp" />
     <ClCompile Include="gameElement.cpp" />
     <ClCompile Include="gameMap.cpp" />
     <ClCompile Include="gameUI.cpp" />
