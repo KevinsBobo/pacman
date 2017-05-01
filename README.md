@@ -1,6 +1,6 @@
 # 吃豆人用户手册
 
-[下载Release版游戏](./Bin/pacMan - 吃豆人.exe)
+[下载Release版游戏](./Bin/pacMan\ -\ 吃豆人.exe)
 
 ## 操作方法
 
