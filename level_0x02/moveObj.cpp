@@ -57,6 +57,24 @@ int CMoveObj::move()
       m_nSpead += 100;
     }
   }
+  // 检查同方向鬼有没有重叠
+  else if(m_nType <= CGame::itemGhoNormal || m_nType <= CGame::itemGhoDie)
+  {
+    // 遍历其在地图数组中后面的鬼
+    for(int i = getType() - CGame::itemGhoRed + 1; i < g_nGhost; ++i)
+    {
+      // 如果坐标相等
+      if(g_gameMap->getMoveObj()[ i ]->getPos() == m_postion)
+      {
+        // 判断方向是否相等
+        if(((CMoveObj*)g_gameMap->getMoveObj()[ i ])->getAction() == m_nAction)
+        {
+          // 将自己方向改为反方向
+          m_nAction = m_nAction + (((m_nAction & 1) == 0) ? 1 : -1);
+        }
+      }
+    }
+  }
 
   return 0;
 }

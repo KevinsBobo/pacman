@@ -23,6 +23,7 @@ const int g_nPlayerCol = 13;
 int g_nAddScore = 0;
 // 玩家吃鬼分数
 int g_nPlayerEatGhostScore = PLAYEREATGHOSTSCORE;
+int g_nPlayerEatGhostScore_show = PLAYEREATGHOSTSCORE;
 // 玩家吃鬼加分倍率
 const float g_fMagScore = 1.5;
 // 玩家被吃标志

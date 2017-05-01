@@ -26,6 +26,7 @@ extern const int g_nPlayerCol;
 extern int g_nAddScore;
 // 玩家吃鬼分数
 extern int g_nPlayerEatGhostScore;
+extern int g_nPlayerEatGhostScore_show;
 // 玩家吃鬼加分倍率
 extern const float g_fMagScore;
 // 玩家被吃标志

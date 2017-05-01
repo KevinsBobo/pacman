@@ -117,9 +117,9 @@ GAMERESTART:
 
   m_uiObj->echoGameInfo(0 , g_nGhostLevel , g_nPlayerlife);
   m_uiObj->echoGameMessage(" ", 400);
-  m_uiObj->echoGameMessage("◎◎◎", 1000);
-  m_uiObj->echoGameMessage("◎◎", 1000);
-  m_uiObj->echoGameMessage("◎", 1000);
+  m_uiObj->echoGameMessage("ΘΘΘ", 1000);
+  m_uiObj->echoGameMessage("ΘΘ", 1000);
+  m_uiObj->echoGameMessage("Θ", 1000);
   m_uiObj->echoGameMessage("开始！", 500);
 
   while(1)
@@ -216,6 +216,11 @@ void CGameCtrl::initGameData()
       {
         (*g_gameMap)[ i ][ j ]->changeType(CGame::itemSurperPean);
       }
+      // 玩家出生位置
+      else if(i == g_nPlayerRow && j == g_nPlayerCol)
+      {
+        (*g_gameMap)[ i ][ j ]->changeType(CGame::itemRoad);
+      }
       // 初始化普通豆子
       else if((*g_gameMap)[i][j]->getType() == CGame::itemRoad)
       {
@@ -235,6 +240,8 @@ void CGameCtrl::initGameData()
   g_nAddScore = 0;
   g_nGhostLevel = 1;
   g_nEatPeanNum = 1;
+  g_nPlayerEatGhostScore = PLAYEREATGHOSTSCORE;
+  g_nPlayerEatGhostScore_show = PLAYEREATGHOSTSCORE;
 
   // 刷新屏幕数据
   m_uiObj->echoGameInfo(0 , g_nGhostLevel , g_nPlayerlife);
@@ -317,14 +324,13 @@ void CGameCtrl::whenPlayerEatSuperPean()
 // 当玩家碰撞恐惧时的鬼
 void CGameCtrl::whenPlayerEatGhost()
 {
-  static int nScore = PLAYEREATGHOSTSCORE;;
   char szBuff[ 0x20 ] = { 0 };
-  sprintf_s(szBuff , 0x20 , "玩家得分：%d" , nScore);
+  sprintf_s(szBuff , 0x20 , "玩家得分：%d" , g_nPlayerEatGhostScore_show);
   m_uiObj->echoGameMessage(szBuff);
 
   g_nFearStartTime += 1200;
 
-  nScore = (int)(nScore * g_fMagScore);
+  g_nPlayerEatGhostScore_show = (int)(g_nPlayerEatGhostScore_show * g_fMagScore);
   
   g_nGhostBeEat -= 1;
 }
@@ -378,6 +384,11 @@ void CGameCtrl::changeGhostAct()
   }
   nPreTime = nowTime;
   int nAct = 0;
+  int againstAct = 0;
+  int leftAct = 0;
+  int rightAct = 0;
+  int leftIsCross = 0;
+  int rightIsCross = 0;
   CPostion dstPos;
   // 地图的四个角落，用于四只鬼的逃亡模式和黄鬼的巡逻角落
   static CPostion mapFourNook[ 4 ];
@@ -389,66 +400,117 @@ void CGameCtrl::changeGhostAct()
 
   for(int i = 0; i < g_nGhost; ++i)
   {
-    // 设置每个鬼的追击目标
-    if(m_ghostObj[i]->getType() == CGame::itemGhoRed)
+    // 判断是否要追击
+    if(m_ghostObj[ i ]->getType() >= CGame::itemGhoRed && m_ghostObj[ i ]->getType() <= CGame::itemGhoPink)
     {
-      // 红鬼追击玩家
-      nAct = findAction(m_ghostObj[i]->getPos(), m_playerObj->getPos(), m_ghostObj[i]->getAction());
-    }
-    else if(m_ghostObj[i]->getType() == CGame::itemGhoYell)
-    {
-      // 黄鬼追击玩家
-      // 先判断玩家是否进入其追踪范围（这只鬼原则是离玩家远了就追玩家，近了就不追）
-      // 算对角线
-      dstPos = m_ghostObj[ i ]->getPos() - m_playerObj->getPos();
-      // dstPos.amend();
-      if(dstPos[ CGame::posRow ] * dstPos[CGame::posRow] + dstPos[CGame::posCol] * dstPos[CGame::posCol] > 128)
-      {
-        // 追踪玩家
-        nAct = findAction(m_ghostObj[i]->getPos(), m_playerObj->getPos(), m_ghostObj[i]->getAction()); 
-      }
-      else
-      {
-        // 自己干自己的事情
-        nAct = findAction(m_ghostObj[i]->getPos(), mapFourNook[0], m_ghostObj[i]->getAction()); 
-      }
-    }
-    else if(m_ghostObj[ i ]->getType() == CGame::itemGhoPink)
-    {
-      // 粉鬼追踪玩家
-      // 获取玩家朝向的第4个坐标，左边2个坐标
-      dstPos = m_playerObj->getPos();
-      for(int j = 0; j < 4; ++j)
-      {
-        dstPos = dstPos.getActionPostion(m_playerObj->getAction());
-      }
-      dstPos = dstPos.getActionPostion(CGame::actLeft);
-      dstPos = dstPos.getActionPostion(CGame::actLeft);
-      nAct = findAction(m_ghostObj[i]->getPos(), dstPos, m_ghostObj[i]->getAction());
-    }
-    else if(m_ghostObj[i]->getType() == CGame::itemGhoBlue)
-    {
-      // 蓝鬼追踪玩家
-      // 获取玩家朝向的第2个坐标
-      dstPos = m_playerObj->getPos();
-      for(int j = 0; j < 2; ++j)
-      {
-        dstPos = dstPos.getActionPostion(m_playerObj->getAction());
-      }
-      // 获取红鬼和玩家朝向的前两格的坐标差
-      dstPos = m_ghostObj[ CGame::itemGhoRed - CGame::itemGhoRed ]->getPos() - dstPos;
-      // 将该坐标差翻倍
-      dstPos = dstPos * 2;
-      // 定位到红鬼和玩家朝向的前两格的连线的2背延长线的坐标
-      dstPos = m_ghostObj[ CGame::itemGhoRed - CGame::itemGhoRed ]->getPos() + dstPos;
+      /*  如果采用下面注释掉的代码实现在路口才改变方向，
+          程序会变卡，鬼的速度提不起来  */
+      // // 获取前后方向
+      // nAct = m_ghostObj[ i ]->getAction();
+      // againstAct = nAct + (((nAct & 1) == 0) ? 1 : -1);
+      // // 获取左右方向
+      // leftAct = ((againstAct - 4) ^ -1);
+      // rightAct = ((nAct - 4) ^ -1);
+      // // 看左右可否转向
+      // if(m_ghostObj[ i ]->changeAction(leftAct , 2) == 0)
+      // {
+      //   // 可以左转向，将方向改回
+      //   m_ghostObj[ i ]->changeAction(nAct);
+      //   leftIsCross = 1;
+      // }
+      // if(m_ghostObj[ i ]->changeAction(rightAct , 2) == 0)
+      // {
+      //   // 可以右转向，将方向转回
+      //   m_ghostObj[ i ]->changeAction(nAct);
+      //   rightIsCross = 1;
+      // }
 
-      nAct = findAction(m_ghostObj[i]->getPos(), dstPos, m_ghostObj[i]->getAction());
+      // // 先判断是否是路口，如果不是路口则不改变方向
+      // if(leftIsCross == 0 && rightIsCross == 0)
+      // {
+      //   // 不是路口，不转向
+      //   break;
+      // }
+      // // 是路口，需要判断是否转向
+      // 设置每个鬼的追击目标
+      if(m_ghostObj[i]->getType() == CGame::itemGhoRed)
+      {
+        // 红鬼追击玩家
+        nAct = findAction(m_ghostObj[i]->getPos(), m_playerObj->getPos(), m_ghostObj[i]->getAction());
+      }
+      else if(m_ghostObj[i]->getType() == CGame::itemGhoYell)
+      {
+        // 黄鬼追击玩家
+        // 先判断玩家是否进入其追踪范围（这只鬼原则是离玩家远了就追玩家，近了就不追）
+        // 算对角线
+        dstPos = m_ghostObj[ i ]->getPos() - m_playerObj->getPos();
+        // dstPos.amend();
+        if(dstPos[ CGame::posRow ] * dstPos[CGame::posRow] + dstPos[CGame::posCol] * dstPos[CGame::posCol] > 128)
+        {
+          // 追踪玩家
+          nAct = findAction(m_ghostObj[i]->getPos(), m_playerObj->getPos(), m_ghostObj[i]->getAction()); 
+        }
+        else
+        {
+          // 自己干自己的事情
+          nAct = findAction(m_ghostObj[i]->getPos(), mapFourNook[0], m_ghostObj[i]->getAction()); 
+        }
+      }
+      else if(m_ghostObj[ i ]->getType() == CGame::itemGhoPink)
+      {
+        // 粉鬼追踪玩家
+        // 获取玩家朝向的第4个坐标，左边2个坐标
+        dstPos = m_playerObj->getPos();
+        for(int j = 0; j < 4; ++j)
+        {
+          dstPos = dstPos.getActionPostion(m_playerObj->getAction());
+        }
+        dstPos = dstPos.getActionPostion(CGame::actLeft);
+        dstPos = dstPos.getActionPostion(CGame::actLeft);
+        nAct = findAction(m_ghostObj[i]->getPos(), dstPos, m_ghostObj[i]->getAction());
+      }
+      else if(m_ghostObj[i]->getType() == CGame::itemGhoBlue)
+      {
+        // 蓝鬼追踪玩家
+        // 获取玩家朝向的第2个坐标
+        dstPos = m_playerObj->getPos();
+        for(int j = 0; j < 2; ++j)
+        {
+          dstPos = dstPos.getActionPostion(m_playerObj->getAction());
+        }
+        // 获取红鬼和玩家朝向的前两格的坐标差
+        dstPos = m_ghostObj[ CGame::itemGhoRed - CGame::itemGhoRed ]->getPos() - dstPos;
+        // 将该坐标差翻倍
+        dstPos = dstPos * 2;
+        // 定位到红鬼和玩家朝向的前两格的连线的2背延长线的坐标
+        dstPos = m_ghostObj[ CGame::itemGhoRed - CGame::itemGhoRed ]->getPos() + dstPos;
+
+        nAct = findAction(m_ghostObj[i]->getPos(), dstPos, m_ghostObj[i]->getAction());
+      }
+
     }
     // 鬼死亡时，回家
     else if(m_ghostObj[ i ]->getType() == CGame::itemGhoDie)
     {
       // 将四只鬼目标定在鬼家中不同位置
-      dstPos.set(g_nFirstGhoRow + (i % 2) , g_nFirstGhoCol + ((i - 1) / 2) * 4);
+      // dstPos.set(g_nFirstGhoRow + (i % 2) , g_nFirstGhoCol + ((i & 2) >> 1 ) * 4);
+      // 使用上面公式设定回家路径时，偶尔会出现在同时吃掉4只鬼时粉鬼回家定位错误
+      if(i == 0)
+      {
+        dstPos.set(g_nFirstGhoRow , g_nFirstGhoCol - 1);
+      }
+      else if(i == 2)
+      {
+        dstPos.set(g_nFirstGhoRow + 1 , g_nFirstGhoCol);
+      }
+      else if(i == 3)
+      {
+        dstPos.set(g_nFirstGhoRow , g_nFirstGhoCol + 4);
+      }
+      else if(i == 4)
+      {
+        dstPos.set(g_nFirstGhoRow + 1 , g_nFirstGhoCol + 3);
+      }
       nAct = findAction(m_ghostObj[i]->getPos(), dstPos, m_ghostObj[i]->getAction());
     }
     // 鬼恐惧状态时，到各自的角落去
@@ -503,12 +565,15 @@ int CGameCtrl::findAction(CPostion srcPos , CPostion dstPos, int nAct)
     // 将坐标数据合法化
     dstPos.amend();
     // 检查该坐标是否是墙
-    if(((*g_gameMap)[ dstPos[ CGame::posRow ] ][ dstPos[ CGame::posCol ] ])->getType() != CGame::itemWall)
+    if(((*g_gameMap)[ dstPos[ CGame::posRow ] ][ dstPos[ CGame::posCol ] ])->getType() == CGame::itemWall)
+    {
+      // 如果是墙就将坐标向其方向移动一个后再判断
+      dstPos = dstPos.getActionPostion(CGame::actDown);
+    }
+    else
     {
       break;
     }
-    // 如果是墙就将坐标向其方向移动一个后再判断
-    dstPos = dstPos.getActionPostion(CGame::actDown);
   }
 
   // 地图数组，用于保存走过的路
