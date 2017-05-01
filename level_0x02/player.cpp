@@ -47,8 +47,11 @@ void CPlayer::setlife(int nlife)
 
 void CPlayer::beHit()
 {
-  g_isBeEat = 1;
-  m_nlife -= 1;
+  if(g_nSuperPeanBeEat == 0)
+  {
+    g_isBeEat = 1;
+    m_nlife -= 1;
+  }
 }
 
 // 更新时间，并返回时间是否大于对象速度

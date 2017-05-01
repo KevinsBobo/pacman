@@ -9,7 +9,7 @@ const int g_nMapCol = 28;
 const int g_nPlayer = 1;
 const int g_nGhost = 4;
 const int g_nPean = 300;
-int g_nPlayerlife = 300;
+int g_nPlayerlife = 3;
 
 CGameMap* g_gameMap = NULL;
 

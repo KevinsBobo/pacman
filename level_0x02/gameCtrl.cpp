@@ -26,7 +26,81 @@ CGameCtrl::~CGameCtrl()
 
 void CGameCtrl::gameStart()
 {
+  int textColor = CGameUI::colWhite * 16 + CGameUI::colThinBlue;
+  m_uiObj->writeChar(7 , g_nMapCol , "-------------------" , textColor);
+  m_uiObj->writeChar(8 , g_nMapCol , "|吃豆人           |" , textColor);
+  m_uiObj->writeChar(9 , g_nMapCol , "|by KevinsBobo    |" , textColor);
+  m_uiObj->writeChar(10 , g_nMapCol , "|http://kevins.pro|" , textColor);
+  m_uiObj->writeChar(11 , g_nMapCol , "-------------------" , textColor);
+  m_uiObj->writeChar(12 , g_nMapCol , "|游戏帮助         |" , textColor);
+  m_uiObj->writeChar(13 , g_nMapCol , "|  W:   上        |" , textColor);
+  m_uiObj->writeChar(14 , g_nMapCol , "|  S:   下        |" , textColor);
+  m_uiObj->writeChar(15 , g_nMapCol , "|  A:   左        |" , textColor);
+  m_uiObj->writeChar(16 , g_nMapCol , "|  D:   右        |" , textColor);
+  m_uiObj->writeChar(17 , g_nMapCol , "| 空格: 开始/暂停 |" , textColor);
+  m_uiObj->writeChar(18 , g_nMapCol , "-------------------" , textColor);
+  char ch = '\0';
+  while(1)
+  {
+    if(_kbhit())
+    {
+      ch = _getch();
+      if(ch == ' ')
+      {
+        break;
+      }
+    }
+  }
+  m_uiObj->writeChar(7 , g_nMapCol , "                   " , textColor);
+  m_uiObj->writeChar(8 , g_nMapCol , "                   " , textColor);
+  m_uiObj->writeChar(9 , g_nMapCol , "                   " , textColor);
+  m_uiObj->writeChar(10 , g_nMapCol , "                   " , textColor);
+  m_uiObj->writeChar(11 , g_nMapCol , "                   " , textColor);
+  m_uiObj->writeChar(12 , g_nMapCol , "                   " , textColor);
+  m_uiObj->writeChar(13 , g_nMapCol , "                   " , textColor);
+  m_uiObj->writeChar(14 , g_nMapCol , "                   " , textColor);
+  m_uiObj->writeChar(15 , g_nMapCol , "                   " , textColor);
+  m_uiObj->writeChar(16 , g_nMapCol , "                   " , textColor);
+  m_uiObj->writeChar(17 , g_nMapCol , "                   " , textColor);
+  m_uiObj->writeChar(18 , g_nMapCol , "                   " , textColor);
+}
 
+int CGameCtrl::gameStop()
+{
+  int textColor = CGameUI::colWhite * 16 + CGameUI::colThinBlue;
+  char szBuff[ 0x20 ] = { 0 };
+  sprintf_s(szBuff , 0x20 , "|%4d分           |" , m_playerObj->getScore());
+  m_uiObj->writeChar(7 , g_nMapCol , "-------------------" , textColor);
+  m_uiObj->writeChar(8 , g_nMapCol , "|游戏结束         |" , textColor);
+  m_uiObj->writeChar(7 , g_nMapCol , "-------------------" , textColor);
+  m_uiObj->writeChar(9 , g_nMapCol , szBuff , textColor);
+  m_uiObj->writeChar(10 , g_nMapCol , "-------------------" , textColor);
+  m_uiObj->writeChar(11 , g_nMapCol , "|  空格: 再来一局 |" , textColor);
+  m_uiObj->writeChar(12 , g_nMapCol , "|  Q   : 退出游戏 |" , textColor);
+  m_uiObj->writeChar(13 , g_nMapCol , "-------------------" , textColor);
+  char ch = '\0';
+  while(1)
+  {
+    if(_kbhit())
+    {
+      ch = _getch();
+      if(ch == ' ')
+      {
+        return 0;
+      }
+      else if(ch == 'q' || ch == 'Q')
+      {
+        return 1;
+      }
+    }
+  }
+  m_uiObj->writeChar(7 , g_nMapCol , "                   " , textColor);
+  m_uiObj->writeChar(8 , g_nMapCol , "                   " , textColor);
+  m_uiObj->writeChar(9 , g_nMapCol , "                   " , textColor);
+  m_uiObj->writeChar(10 , g_nMapCol , "                   " , textColor);
+  m_uiObj->writeChar(11 , g_nMapCol , "                   " , textColor);
+  m_uiObj->writeChar(12 , g_nMapCol , "                   " , textColor);
+  m_uiObj->writeChar(13 , g_nMapCol , "                   " , textColor);
 }
 
 void CGameCtrl::gameLoop()
@@ -35,8 +109,19 @@ void CGameCtrl::gameLoop()
   static const clock_t nRefreshTime = 200;
   static clock_t nowTime = 0;
   static char ch;
+  static int nPause = 0;
 
+GAMERESTART:
   m_mapObj->show(m_uiObj , &CGameUI::echoMap);
+  gameStart();
+
+  m_uiObj->echoGameInfo(0 , g_nGhostLevel , g_nPlayerlife);
+  m_uiObj->echoGameMessage(" ", 400);
+  m_uiObj->echoGameMessage("◎◎◎", 1000);
+  m_uiObj->echoGameMessage("◎◎", 1000);
+  m_uiObj->echoGameMessage("◎", 1000);
+  m_uiObj->echoGameMessage("开始！", 500);
+
   while(1)
   {
     if(_kbhit())
@@ -60,7 +145,17 @@ void CGameCtrl::gameLoop()
         case 'D':
           m_playerObj->changeAction(CGame::actRight);
           break;
+        case ' ':
+          nPause = (nPause == 0) ? 1 : 0;
+          break;
       }
+    }
+
+    if(nPause == 1)
+    {
+      m_uiObj->echoGameMessage("暂停中！", 300);
+      m_uiObj->echoGameMessage("       ", 300);
+      continue;
     }
 
     nowTime = clock();
@@ -72,7 +167,15 @@ void CGameCtrl::gameLoop()
 
     if(checkStatus() == 1)
     {
-      break;
+      if(gameStop() == 1)
+      {
+        break;
+      }
+      else
+      {
+        initGameData();
+        goto GAMERESTART;
+      }
     }
 
     for(int i = 0; i < g_nGhost + g_nPlayer; ++i)
@@ -86,6 +189,55 @@ void CGameCtrl::gameLoop()
 
     m_mapObj->show(m_uiObj , &CGameUI::echoMap);
   }
+}
+
+void CGameCtrl::initGameData()
+{
+  // 初始化鬼信息
+  for(int i = 0; i < g_nGhost; ++i)
+  {
+    m_ghostObj[ i ]->backPos();
+    m_ghostObj[ i ]->setSpead(g_nInitGhoSpead);
+  }
+
+  // 初始化玩家信息
+  m_playerObj->backPos();
+  m_playerObj->setlife(g_nPlayerlife);
+  m_playerObj->setScore(1);
+  
+  // 初始化豆子
+  for(int i = 0; i < g_nMapRow; ++i)
+  {
+    for(int j = 0; j < g_nMapCol; ++j)
+    {
+      // 初始化超级豆子
+      if((i == 3 && j== 1) || (i == 3 && j == g_nMapCol - 2) ||
+         (i == g_nMapRow - 8 && j == 1) || (i == g_nMapRow - 8 && j == g_nMapCol - 2))
+      {
+        (*g_gameMap)[ i ][ j ]->changeType(CGame::itemSurperPean);
+      }
+      // 初始化普通豆子
+      else if((*g_gameMap)[i][j]->getType() == CGame::itemRoad)
+      {
+        (*g_gameMap)[ i ][ j ]->changeType(CGame::itemPean);
+      }
+    }
+  }
+   
+  // 将UI置为初始状态
+  isInitRefash = 0;
+  echoInfoisStatic = 0;
+
+  // 游戏数据初始化
+  g_isBeEat = 0;
+  g_nGhostBeEat = 0;
+  g_nSuperPeanBeEat = 0;
+  g_nAddScore = 0;
+  g_nGhostLevel = 1;
+  g_nEatPeanNum = 1;
+
+  // 刷新屏幕数据
+  m_uiObj->echoGameInfo(0 , g_nGhostLevel , g_nPlayerlife);
 }
 
 // 检查状态

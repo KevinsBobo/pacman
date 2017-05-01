@@ -12,6 +12,8 @@ public:
 
   void gameStart();
   void gameLoop();
+  int gameStop();
+  void initGameData();
 
   // ¼ì²é×´Ì¬
   int checkStatus();

@@ -67,7 +67,7 @@ CGameUI::CGameUI()
 
   for(int nRow = 0; nRow < g_nMapRow; ++nRow)
   {
-    for(int nCol = g_nMapCol; nCol < g_nMapCol + 10; ++nCol)
+    for(int nCol = 0; nCol <= g_nMapCol + 10; ++nCol)
     {
       writeChar( nRow, nCol , "  " , CGameUI::colWhite * 16);
     }
@@ -88,25 +88,25 @@ void CGameUI::echoMap(int nRow , int nCol , int nType)
 }
 
 // 输出游戏信息
+int echoInfoisStatic = 0;
 void CGameUI::echoGameInfo(int nScore , int nGhostLevel , int nPlayerLife)
 {
   static int nPreScore = nScore;
   static int nPreGhostLevel = nGhostLevel;
   static int nPrePlayerLife = nPlayerLife;
-  static int isStatic = 0;
   char szBuff[ 0x20 ] = { 0 };
 
   int textColor = CGameUI::colWhite * 16 + CGameUI::colBlack;
 
-  if(isStatic == 0)
+  if(echoInfoisStatic == 0)
   {
-    isStatic = 1;
+    echoInfoisStatic = 1;
 
-    sprintf_s(szBuff , 0x20 , "分数：%d" , nScore);
+    sprintf_s(szBuff , 0x20 , "分数：%d    " , nScore);
     writeChar( 1, g_nMapCol + 1 , szBuff , textColor);
-    sprintf_s(szBuff , 0x20 , "难度：%d" , nGhostLevel);
+    sprintf_s(szBuff , 0x20 , "难度：%d    " , nGhostLevel);
     writeChar( 4, g_nMapCol + 1 , szBuff , textColor);
-    sprintf_s(szBuff , 0x20 , "生命：%d" , nPlayerLife);
+    sprintf_s(szBuff , 0x20 , "生命：%d    " , nPlayerLife);
     writeChar( g_nMapRow - 2, g_nMapCol + 1 , szBuff , textColor);
   }
   else
@@ -114,26 +114,26 @@ void CGameUI::echoGameInfo(int nScore , int nGhostLevel , int nPlayerLife)
     if(nScore != nPreScore)
     {
       nPreScore = nScore;
-      sprintf_s(szBuff , 0x20 , "分数：%d" , nScore);
+      sprintf_s(szBuff , 0x20 , "分数：%d    " , nScore);
       writeChar( 1, g_nMapCol + 1 , szBuff , textColor);
     }
     if(nGhostLevel != nPreGhostLevel)
     {
       nPreGhostLevel = nGhostLevel;
-      sprintf_s(szBuff , 0x20 , "难度：%d" , nGhostLevel);
+      sprintf_s(szBuff , 0x20 , "难度：%d    " , nGhostLevel);
       writeChar( 4, g_nMapCol + 1 , szBuff , textColor);
     }
     if(nPlayerLife != nPreGhostLevel)
     {
       nPrePlayerLife = nPlayerLife;
-      sprintf_s(szBuff , 0x20 , "生命：%d" , nPlayerLife);
+      sprintf_s(szBuff , 0x20 , "生命：%d    " , nPlayerLife);
       writeChar( g_nMapRow - 2, g_nMapCol + 1 , szBuff , textColor);
     }
   }
 }
 
 // 在消息区域显示消息
-void CGameUI::echoGameMessage(char* szBuff)
+void CGameUI::echoGameMessage(char* szBuff, int nTime)
 {
   int textColor = CGameUI::colWhite * 16 + CGameUI::colBlack;
   int nMassageBoxRow = 16;
@@ -142,7 +142,7 @@ void CGameUI::echoGameMessage(char* szBuff)
 
   writeChar( nMassageBoxRow, nMassageBoxCol , szBuff , textColor);
 
-  Sleep(1200);
+  Sleep(nTime);
 
   writeChar( nMassageBoxRow, nMassageBoxCol , "                  " , textColor);
 
@@ -157,10 +157,10 @@ void CGameUI::echoMapByPrintf(int nRow , int nCol , int nType)
   }
 }
 
+int isInitRefash = 0;
 void CGameUI::echoMapByApi(int nRow , int nCol , int nType)
 {
   // 只刷新一次
-  static int isInitRefash = 0;
   static int nMoveObjPreRow[ NPLAYER + NGHOST ] = { 0 };
   static int nMoveObjPreCol[ NPLAYER + NGHOST ] = { 0 };
   static int nMoveObjNowRow[ NPLAYER + NGHOST ] = { 0 };

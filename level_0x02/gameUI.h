@@ -3,6 +3,8 @@
 #pragma once
 #include "pacMan.h"
 
+extern int isInitRefash;
+extern int echoInfoisStatic;
 class CGameUI
 {
 public:
@@ -35,7 +37,7 @@ public:
   void echoGameInfo(int nScore, int nGhostLevel, int nPlayerLife);
 
   // 在消息区域显示消息
-  void echoGameMessage(char* szBuff);
+  void echoGameMessage(char* szBuff, int nTime = 1200);
 
   void echoMapByPrintf(int nRow , int nCol , int nType);
 
