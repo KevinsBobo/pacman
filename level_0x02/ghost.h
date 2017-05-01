@@ -21,6 +21,9 @@ public:
   // 回位
   virtual void backPos();
 
+  // 获取是什么颜色的鬼
+  virtual int getWhatGhost();
+
 private:
   int m_nWhatGhost;
 };

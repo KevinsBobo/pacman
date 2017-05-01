@@ -45,6 +45,19 @@ int CMoveObj::move()
   {
     m_postion = m_postion.getActionPostion(m_nAction);
   }
+
+  // 检查死鬼是否回家
+  if(m_nType == CGame::itemGhoDie)
+  {
+    if(m_postion[ CGame::posRow ] == g_nFirstGhoRow &&
+       m_postion[ CGame::posCol ] >= g_nFirstGhoCol - 1 &&
+       m_postion[ CGame::posCol ] <= g_nFirstGhoCol + g_nGhost)
+    {
+      m_nType = CGame::itemGhoNormal;
+      m_nSpead += 100;
+    }
+  }
+
   return 0;
 }
 
@@ -54,8 +67,19 @@ void CMoveObj::setSpead(int nSpead)
   m_nSpead = nSpead;
 }
 
+clock_t CMoveObj::getSpead()
+{
+  return m_nSpead;
+}
+
 // 回位
 void CMoveObj::backPos()
 {
 
+}
+
+// 获取方向
+int CMoveObj::getAction()
+{
+  return m_nAction;
 }

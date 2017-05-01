@@ -17,8 +17,13 @@ public:
   virtual int move();
   // 设置速度
   virtual void setSpead(int nSpead);
+  // 获取速度
+  virtual clock_t getSpead();
   // 回位
   virtual void backPos();
+  // 获取方向
+  virtual int getAction();
+
 protected:
   clock_t m_nSpead;
   clock_t m_nPreMoveClock;

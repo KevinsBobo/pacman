@@ -30,10 +30,11 @@ int& CPostion::operator[](int nIndex)
 
 
 // 坐标赋值
-void CPostion::operator=(CPostion& obj)
+CPostion& CPostion::operator=(CPostion& obj)
 {
   m_nRow = obj.m_nRow;
   m_nCol = obj.m_nCol;
+  return *this;
 }
 
 
@@ -51,11 +52,48 @@ int CPostion::operator==(CPostion& obj)
 }
 
 
+// 将两个坐标相加（直接相加）
+CPostion CPostion::operator+(CPostion& obj)
+{
+  CPostion tempPos = *this;
+  tempPos.m_nRow += obj.m_nRow;
+  tempPos.m_nCol += obj.m_nCol;
+  tempPos.amend();
+  return tempPos;
+}
+
+// 获取两个坐标差（横竖差坐标的差，可以是负值）
+CPostion CPostion::operator-(CPostion& obj)
+{
+  CPostion tempPos = *this;
+  tempPos.m_nRow -= obj.m_nRow;
+  tempPos.m_nCol -= obj.m_nCol;
+  return tempPos;
+}
+
+// 将坐标与数字相乘
+CPostion CPostion::operator*(int nNum)
+{
+  CPostion tempPos = *this;
+  tempPos.m_nRow *= nNum;
+  tempPos.m_nCol *= nNum;
+  return tempPos;
+}
+
+// 修正坐标（防止越界）
+void CPostion::amend()
+{
+  m_nRow = (m_nRow + g_nMapRow) % g_nMapRow;
+  m_nCol = (m_nCol + g_nMapCol) % g_nMapCol;
+}
+
 // 设置坐标
 void CPostion::set(int nRow , int nCol)
 {
   m_nRow = nRow;
   m_nCol = nCol;
+
+  amend();
 }
 
 
@@ -74,8 +112,7 @@ CPostion CPostion::getActionPostion(int nAction)
   nextPos[ CGame::posRow ] += (nextPos[ CGame::posRow ] < 0) ? g_nMapRow : 0;
   nextPos[ CGame::posCol ] += (nextPos[ CGame::posCol ] < 0) ? g_nMapCol : 0;
 
-  nextPos[ CGame::posRow ] %= g_nMapRow;
-  nextPos[ CGame::posCol ] %= g_nMapCol;
+  nextPos.amend();
 
   return nextPos;
 }

@@ -28,7 +28,7 @@ public:
   virtual int move() = 0;
 
   /* 改变方向 */
-  virtual int changeAction(int nAct) = 0;
+  virtual int changeAction(int nAct, int nMode = 1) = 0;
 
   /* 碰撞检测 */
   virtual const int isCrash(int nMode = 0) = 0;

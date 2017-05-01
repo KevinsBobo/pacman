@@ -34,6 +34,11 @@ const int CGameElement::operator==(IGameElement& obj)
   {
     return CGame::craNo;
   }
+  // 死鬼
+  else if(nMyType == CGame::itemGhoDie)
+  {
+    return CGame::craPass;
+  }
   // 撞路
   else if(obj.getType() == CGame::itemRoad)
   {
@@ -42,7 +47,7 @@ const int CGameElement::operator==(IGameElement& obj)
   // 撞豆子
   else if(obj.getType() == CGame::itemPean)
   {
-    // 玩家装豆
+    // 玩家撞豆
     if(nMyType == CGame::itemPlayer)
     {
       return CGame::craHitAn;
@@ -55,7 +60,7 @@ const int CGameElement::operator==(IGameElement& obj)
   // 撞鬼家
   else if(obj.getType() == CGame::itemGhoHome)
   {
-    // 玩家装鬼家
+    // 玩家撞鬼家
     if(nMyType == CGame::itemPlayer)
     {
       return CGame::craNo;
@@ -81,6 +86,18 @@ const int CGameElement::operator==(IGameElement& obj)
   // 撞死鬼
   else if (obj.getType() == CGame::itemGhoDie)
   {
+    return CGame::craPass;
+  }
+  // 鬼撞鬼
+  else if(nMyType >= CGame::itemGhoNormal && nMyType <= CGame::itemGhoDie &&
+          obj.getType() >= CGame::itemGhoNormal && obj.getType() <= CGame::itemGhoDie)
+  {
+    // 鬼是可以相互穿越的
+    // 恐惧状态的鬼可以相互穿过
+    // if(nMyType == CGame::itemGhoFear || obj.getType() == CGame::itemGhoFear)
+    // {
+    //   return CGame::craPass;
+    // }
     return CGame::craPass;
   }
   // 自己撞自己（基本上不可能，但要防止意外发生）
@@ -145,18 +162,19 @@ int CGameElement::move()
 }
 
 // 改变方向
-int CGameElement::changeAction(int nAct)
+int CGameElement::changeAction(int nAct, int nMode)
 {
-  if(m_nAction == nAct)
-  {
-    return 0;
-  }
+  // if(m_nAction == nAct)
+  // {
+  //   return 0;
+  // }
   int nPreAct = m_nAction;
   m_nAction = nAct;
-  int nCrash = isCrash(1);
+  int nCrash = isCrash(nMode);
   if(nCrash == CGame::craNo)
   {
     m_nAction = nPreAct;
+    return 1;
   }
   return 0;
 }
@@ -177,36 +195,43 @@ const int CGameElement::isCrash(int nMode)
   {
     nextObj->beHit();
   }
-
-  // 获取与动态对象碰撞结果
   nCrash = CGame::craPass;
-  IGameElement** moveObj = g_gameMap->getMoveObj();
-  for(int i = 0; i < g_nGhost + g_nPlayer; ++i)
+
+  if(nMode != 2)
   {
-    if(m_nType == moveObj[ i ]->getType() && m_postion == moveObj[i]->getPos())
+    // 获取与动态对象碰撞结果
+    nCrash = CGame::craPass;
+    IGameElement** moveObj = g_gameMap->getMoveObj();
+    nextObj = NULL;
+    for(int i = 0; i < g_nGhost + g_nPlayer; ++i)
     {
-      continue;
+      if(m_nType == moveObj[ i ]->getType() && m_postion == moveObj[i]->getPos())
+      {
+        continue;
+      }
+
+      if(nextPos == moveObj[ i ]->getPos())
+      {
+        nCrash = (*this == *moveObj[ i ]);
+        nextObj = moveObj[ i ];
+      }
     }
 
-    if(nextPos == moveObj[ i ]->getPos())
+    if(nCrash == CGame::craNo)
     {
-      nCrash = (*this == *moveObj[ i ]);
+      return CGame::craNo;
     }
-  }
+    else if(nMode == 0 && nCrash == CGame::craBeHit)
+    {
+      beHit();
+      return CGame::craNo;
+    }
+    else if(nMode == 0 && nextObj != NULL && nCrash == CGame::craHitAn)
+    {
+      nextObj->beHit();
+      return CGame::craNo;
+    }
 
-  if(nCrash == CGame::craNo)
-  {
-    return CGame::craNo;
-  }
-  else if(nMode == 0 && nCrash == CGame::craBeHit)
-  {
-    beHit();
-    return CGame::craNo;
-  }
-  else if(nMode == 0 && nCrash == CGame::craHitAn)
-  {
-    nextObj->beHit();
-    return CGame::craNo;
   }
 
   return CGame::craPass;

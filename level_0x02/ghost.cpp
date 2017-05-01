@@ -29,11 +29,19 @@ const int CGhost::getType()
           m_nWhatGhost : m_nType;
 }
 
+// 获取是什么颜色的鬼
+int CGhost::getWhatGhost()
+{
+  return m_nWhatGhost;
+}
 
 // 进入恐惧模式
 void CGhost::toFear()
 {
-  m_nType = CGame::itemGhoFear;
+  if(m_nType != CGame::itemGhoDie)
+  {
+    m_nType = CGame::itemGhoFear;
+  }
 }
 
 void CGhost::beHit()
@@ -41,8 +49,10 @@ void CGhost::beHit()
   if(m_nType == CGame::itemGhoFear)
   {
     g_nAddScore += g_nPlayerEatGhostScore;
-    g_nPlayerEatGhostScore += (int)(g_nPlayerEatGhostScore * g_fMagScore);
-    g_nGhostBeEat = 1;
+    g_nPlayerEatGhostScore = (int)(g_nPlayerEatGhostScore * g_fMagScore);
+    g_nGhostBeEat += 1;
+    m_nType = CGame::itemGhoDie;
+    m_nSpead -= 100;
   }
 }
 
@@ -50,7 +60,7 @@ void CGhost::beHit()
 int CGhost::updateClock()
 {
   clock_t nowTime = clock();
-  if(nowTime - g_nInitGhoSpead >= m_nPreMoveClock)
+  if(nowTime - m_nSpead >= m_nPreMoveClock)
   {
     m_nPreMoveClock = nowTime;
     return 1;
@@ -61,17 +71,11 @@ int CGhost::updateClock()
 // 回位
 void CGhost::backPos()
 {
-  static int nNum = CGame::itemGhoRed;
   static int nCol = g_nFirstGhoCol;
   m_nAction = CGame::actUp;
   m_postion.set(g_nFirstGhoRow, nCol++);
-  m_nWhatGhost = nNum++;
   m_nType = CGame::itemGhoNormal;
 
-  if(nNum > CGame::itemGhoPink)
-  {
-    nNum = CGame::itemGhoRed;
-  }
   if(nCol == g_nFirstGhoCol + 4)
   {
     nCol = g_nFirstGhoCol;

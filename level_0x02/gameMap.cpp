@@ -86,8 +86,16 @@ CGameMap::~CGameMap()
   }
 }
 
-void CGameMap::show(CGameUI* uiObj, echoMapElement echoFun)
+void CGameMap::show(CGameUI* uiObj , echoMapElement echoFun)
 {
+  // 先将动态元素刷一遍，解决一个动态和非动态刷新不及时问题
+  for(int i = MAPROW * MAPCOL; i < MAPROW * MAPCOL + NGHOST + NPLAYER; ++i)
+  {
+    (uiObj->*echoFun)((*m_gameObj[ i ])[ CGame::posRow ] ,
+                       (*m_gameObj[ i ])[ CGame::posCol ] ,
+                        m_gameObj[ i ]->getType());
+  }
+  // 然后再全部刷一遍
   for(int i = 0; i < MAPROW * MAPCOL + NGHOST + NPLAYER; ++i)
   {
     (uiObj->*echoFun)((*m_gameObj[ i ])[ CGame::posRow ] ,

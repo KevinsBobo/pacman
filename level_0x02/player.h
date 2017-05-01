@@ -12,8 +12,8 @@ public:
   int getScore();
   void setScore(int nScore);
   void addScore(int nScore);
-  int getLift();
-  void setLift(int nLift);
+  int getlife();
+  void setlife(int nlife);
   
   virtual void CPlayer::beHit();
   
@@ -24,6 +24,6 @@ public:
 
 private:
   int m_nScore;
-  int m_nLift;
+  int m_nlife;
 };
 

@@ -22,6 +22,16 @@ public:
   void whenPlayerEatGhost();
   // 当玩家碰撞正常鬼
   void whenGhostEatPlayer();
+  // 当玩家吃完所有豆子
+  void whenAllPeanBeEat();
+  // 检查玩家分数、升级鬼
+  void checkPlayerScore();
+
+  // 改变鬼的方向
+  void changeGhostAct();
+
+  // 寻路算法
+  int findAction(CPostion srcPos, CPostion dstPos, int nAct);
 
 private:
   CGameCtrl();

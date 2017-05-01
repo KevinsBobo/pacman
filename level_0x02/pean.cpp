@@ -22,4 +22,5 @@ void CPean::beHit()
 {
   m_nType = CGame::itemRoad;
   g_nAddScore += g_nPeanBeEatScore;
+  ++g_nEatPeanNum;
 }

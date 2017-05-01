@@ -3,13 +3,6 @@
 #pragma once
 #include "pacMan.h"
 
-/*
-待完成：
-    2. 只输出变化的部分
-    3. 重写墙的输出
-    4. 实现超级豆子闪烁
-*/
-
 class CGameUI
 {
 public:
@@ -37,6 +30,12 @@ public:
   SINGLE_INSTANCE_STAT(CGameUI);
 
   void echoMap(int nRow , int nCol , int nType);
+
+  // 输出游戏信息
+  void echoGameInfo(int nScore, int nGhostLevel, int nPlayerLife);
+
+  // 在消息区域显示消息
+  void echoGameMessage(char* szBuff);
 
   void echoMapByPrintf(int nRow , int nCol , int nType);
 

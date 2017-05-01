@@ -25,7 +25,7 @@ public:
   // 移动
   virtual int move();
   // 改变方向
-  virtual int changeAction(int nAct);
+  virtual int changeAction(int nAct, int nMode = 1);
   // 碰撞检测
   virtual const int isCrash(int nMode = 0);
   // 撞到比自己碰撞等级高的

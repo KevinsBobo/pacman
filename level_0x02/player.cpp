@@ -2,7 +2,7 @@
 
 
 CPlayer::CPlayer(int nRow , int nCol)
-  : CMoveObj(nRow , nCol) , m_nScore(1) , m_nLift(3)
+  : CMoveObj(nRow , nCol) , m_nScore(1) , m_nlife(g_nPlayerlife)
 {
   m_nType = CGame::itemPlayer;
   m_nAction = CGame::actLeft;
@@ -35,27 +35,27 @@ void CPlayer::addScore(int nScore)
   m_nScore += nScore;
 }
 
-int CPlayer::getLift()
+int CPlayer::getlife()
 {
-  return m_nLift;
+  return m_nlife;
 }
 
-void CPlayer::setLift(int nLift)
+void CPlayer::setlife(int nlife)
 {
-  m_nLift = nLift;
+  m_nlife = nlife;
 }
 
 void CPlayer::beHit()
 {
   g_isBeEat = 1;
-  m_nLift -= 1;
+  m_nlife -= 1;
 }
 
 // 更新时间，并返回时间是否大于对象速度
 int CPlayer::updateClock()
 {
   clock_t nowTime = clock();
-  if(nowTime - g_nInitPlayerSpead >= m_nPreMoveClock)
+  if(nowTime - m_nSpead >= m_nPreMoveClock)
   {
     m_nPreMoveClock = nowTime;
     return 1;

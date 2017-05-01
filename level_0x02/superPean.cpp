@@ -23,4 +23,5 @@ void CSuperPean::beHit()
   m_nType = CGame::itemRoad;
   g_nAddScore += g_nSuperPeanBeEatScore;
   g_nSuperPeanBeEat += 1;
+  ++g_nEatPeanNum;
 }
