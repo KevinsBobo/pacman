@@ -65,7 +65,7 @@ CGameUI::CGameUI()
 {
   setWindowSize("pacMan - KevinsBobo" , g_nMapRow , (g_nMapCol + 10) * 2);
 
-  for(int nRow = 0; nRow < g_nMapRow; ++nRow)
+  for(int nRow = 0; nRow < g_nMapRow + 1; ++nRow)
   {
     for(int nCol = 0; nCol <= g_nMapCol + 10; ++nCol)
     {
