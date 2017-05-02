@@ -4,6 +4,11 @@
 
 [下载Release版游戏](./Bin/pacMan\ -\ 吃豆人.exe)
 
+
+- 游戏截图：
+
+![](./pacMan_class_design/game_sc.png)
+
 ## 操作方法
 
 - ```空格键``` - 开始/暂停
