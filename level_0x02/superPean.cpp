@@ -20,6 +20,11 @@ IGameElement* CSuperPean::creatSelf(int nRow, int nCol)
 
 void CSuperPean::beHit()
 {
+  // 玩家被吃时，不会执行相应操作
+  if(g_isBeEat != 0)
+  {
+    return;
+  }
   m_nType = CGame::itemRoad;
   g_nAddScore += g_nSuperPeanBeEatScore;
   g_nSuperPeanBeEat += 1;

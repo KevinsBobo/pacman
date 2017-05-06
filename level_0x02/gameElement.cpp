@@ -183,19 +183,8 @@ int CGameElement::changeAction(int nAct, int nMode)
 const int CGameElement::isCrash(int nMode)
 {
   CPostion nextPos = m_postion.getActionPostion(m_nAction);
-  IGameElement* nextObj = (*g_gameMap)[ nextPos[ CGame::posRow ] ][nextPos[CGame::posCol]];
-
-  // 获取与静态对象碰撞结果
-  int nCrash = (*this == *nextObj);
-  if(nCrash == CGame::craNo)
-  {
-    return CGame::craNo;
-  }
-  else if(nMode == 0 && nCrash == CGame::craHitAn)
-  {
-    nextObj->beHit();
-  }
-  nCrash = CGame::craPass;
+  IGameElement* nextObj = NULL;
+  int nCrash = CGame::craPass;
 
   if(nMode != 2)
   {
@@ -234,6 +223,18 @@ const int CGameElement::isCrash(int nMode)
 
   }
 
+  // 获取与静态对象碰撞结果
+  nextObj = (*g_gameMap)[ nextPos[ CGame::posRow ] ][nextPos[CGame::posCol]];
+  nCrash  = (*this == *nextObj);
+
+  if(nCrash == CGame::craNo)
+  {
+    return CGame::craNo;
+  }
+  else if(nMode == 0 && nCrash == CGame::craHitAn)
+  {
+    nextObj->beHit();
+  }
   return CGame::craPass;
 }
 

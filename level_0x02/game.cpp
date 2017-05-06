@@ -44,6 +44,8 @@ const clock_t g_nGhostFearTime = 10000;
 clock_t g_nFearStartTime = 0;
 // 鬼等级
 int g_nGhostLevel = 1;
+// 鬼当前速度
+clock_t g_nNowGhostSpead = g_nInitGhoSpead;
 
 CGame::CGame()
 {

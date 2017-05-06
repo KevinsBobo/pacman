@@ -47,6 +47,8 @@ extern const clock_t g_nGhostFearTime;
 extern clock_t g_nFearStartTime;
 // 鬼等级
 extern int g_nGhostLevel;
+// 鬼当前速度
+extern clock_t g_nNowGhostSpead;
 
 #define MAPROW  31
 #define MAPCOL  28

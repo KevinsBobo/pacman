@@ -52,7 +52,7 @@ void CGhost::beHit()
     g_nPlayerEatGhostScore = (int)(g_nPlayerEatGhostScore * g_fMagScore);
     g_nGhostBeEat += 1;
     m_nType = CGame::itemGhoDie;
-    m_nSpead -= 100;
+    // m_nSpead -= 100;
   }
 }
 

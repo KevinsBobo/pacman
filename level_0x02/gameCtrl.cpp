@@ -242,6 +242,7 @@ void CGameCtrl::initGameData()
   g_nEatPeanNum = 1;
   g_nPlayerEatGhostScore = PLAYEREATGHOSTSCORE;
   g_nPlayerEatGhostScore_show = PLAYEREATGHOSTSCORE;
+  g_nNowGhostSpead = g_nInitGhoSpead;
 
   // 刷新屏幕数据
   m_uiObj->echoGameInfo(0 , g_nGhostLevel , g_nPlayerlife);
@@ -361,14 +362,13 @@ void CGameCtrl::whenAllPeanBeEat()
 // 检查玩家分数、升级鬼
 void CGameCtrl::checkPlayerScore()
 {
-  static int nSpead = g_nInitGhoSpead;
   if(m_playerObj->getScore() > 100 * g_nGhostLevel && g_nGhostLevel < 4)
   {
-    nSpead -= 50;
+    g_nNowGhostSpead -= 50;
     g_nGhostLevel += 1;
     for(int i = 0; i < g_nGhost; ++i)
     {
-      m_ghostObj[ i ]->setSpead(nSpead);
+      m_ghostObj[ i ]->setSpead(g_nNowGhostSpead);
     }
   }
 }
@@ -499,15 +499,15 @@ void CGameCtrl::changeGhostAct()
       {
         dstPos.set(g_nFirstGhoRow , g_nFirstGhoCol - 1);
       }
-      else if(i == 2)
+      else if(i == 1)
       {
         dstPos.set(g_nFirstGhoRow + 1 , g_nFirstGhoCol);
       }
-      else if(i == 3)
+      else if(i == 2)
       {
         dstPos.set(g_nFirstGhoRow , g_nFirstGhoCol + 4);
       }
-      else if(i == 4)
+      else if(i == 3)
       {
         dstPos.set(g_nFirstGhoRow + 1 , g_nFirstGhoCol + 3);
       }

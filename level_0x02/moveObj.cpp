@@ -54,7 +54,7 @@ int CMoveObj::move()
        m_postion[ CGame::posCol ] <= g_nFirstGhoCol + g_nGhost)
     {
       m_nType = CGame::itemGhoNormal;
-      m_nSpead += 100;
+      // m_nSpead += 100;
     }
   }
   // 检查同方向鬼有没有重叠
